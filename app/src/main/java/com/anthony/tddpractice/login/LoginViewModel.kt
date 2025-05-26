@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.StateFlow
 
 private const val SCREEN_STATE = "SCREEN_STATE"
 
-class LoginViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
+class LoginViewModel(
+    private val stateHandle: SavedStateHandle,
+) : ViewModel() {
 
     val state: StateFlow<LoginScreenState> = stateHandle.getStateFlow(
         SCREEN_STATE,
@@ -41,6 +43,10 @@ class LoginViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
                 )
             }
         }
+    }
+
+    fun performLogin() {
+        TODO()
     }
 
 }
