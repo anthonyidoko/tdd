@@ -11,6 +11,7 @@ composeBom = "2024.04.01"
 truthVersion = "1.4.4"
 jsonSerializationVersion = "1.8.1"
 serilaztionPlugin = "2.1.21"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -22,6 +23,8 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
 
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
@@ -42,5 +45,5 @@ kotlin-parcelize = {id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = 
 
 [bundles]
 unit-test = ["junit","truth"]
-lifecycle-ktx = ["androidx-lifecycle-runtime-ktx","androidx-lifecycle-viewmodel-ktx"]
+lifecycle-ktx = ["androidx-lifecycle-runtime-ktx","androidx-lifecycle-viewmodel-ktx","androidx-viewmodel-compose"]
 

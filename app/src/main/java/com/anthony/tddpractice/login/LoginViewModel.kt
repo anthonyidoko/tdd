@@ -1,30 +1,46 @@
 package com.anthony.tddpractice.login
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.StateFlow
 
-private const val LOGIN_INPUT_STATE = "LOGIN_UI_STATE"
+private const val SCREEN_STATE = "SCREEN_STATE"
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
 
-    private val _state = MutableStateFlow(LoginScreenState())
-    val state = _state.asStateFlow()
+    val state: StateFlow<LoginScreenState> = stateHandle.getStateFlow(
+        SCREEN_STATE,
+        LoginScreenState()
+    )
 
     fun updateUsername(newValue: String) {
-        val newInputState = _state.value.inputState.copy(username = newValue)
-        _state.update {
-            it.copy(inputState = newInputState)
+        stateHandle.update<LoginScreenState>(SCREEN_STATE) {
+            it.copy(username = newValue)
         }
     }
 
     fun updatePassword(newValue: String) {
-        val newInput = _state.value.inputState.copy(password = newValue)
-        _state.update {
-            it.copy(inputState = newInput)
+        val previousState = stateHandle.get<LoginScreenState>(SCREEN_STATE) ?: LoginScreenState()
+        stateHandle[SCREEN_STATE] = previousState.copy(
+            password = newValue
+        )
+    }
+
+    private inline fun <T> SavedStateHandle.update(key: String, block: (T) -> T) {
+        requireNotNull(get<T>(key)).let(block).let {
+            this[key] = it
         }
     }
 
+    fun updateState() {
+        stateHandle.get<LoginScreenState>(SCREEN_STATE)?.let { state ->
+            if (state.username.isNotEmpty() || state.password.isNotEmpty()) {
+                stateHandle[SCREEN_STATE] = LoginScreenState(
+                    username = state.username,
+                    password = state.password
+                )
+            }
+        }
+    }
 
 }
