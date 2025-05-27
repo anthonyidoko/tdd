@@ -1,15 +1,23 @@
 package com.anthony.tddpractice.login
 
 import androidx.lifecycle.SavedStateHandle
+import com.anthony.tddpractice.login.data.repository.InMemoryLoginRepository
+import com.anthony.tddpractice.login.data.validator.CredentialValidator
 import com.google.common.truth.Truth.assertThat
+import org.junit.Before
 import org.junit.Test
 
 class LoginScreenStateTest {
     private val stateHandle = SavedStateHandle()
+    private lateinit var viewModel: LoginViewModel
+
+    @Before
+    fun setUp(){
+        viewModel = LoginViewModel(stateHandle, InMemoryLoginRepository(), CredentialValidator())
+    }
 
     @Test
     fun testInitialLoginScreenState() {
-        val viewModel = LoginViewModel(SavedStateHandle())
         val actual = viewModel.state.value
         val expected = LoginScreenState()
 
@@ -19,7 +27,6 @@ class LoginScreenStateTest {
     @Test
     fun testUsernameIsUpdated() {
         val newValue = "::unImportant::"
-        val viewModel = LoginViewModel(stateHandle)
 
         viewModel.updateUsername(newValue)
 
@@ -29,8 +36,6 @@ class LoginScreenStateTest {
     @Test
     fun testPasswordIsUpdated() {
         val newPassword = "::unImportant::"
-        val viewModel = LoginViewModel(stateHandle)
-
         viewModel.updatePassword(newPassword)
 
         assertThat(viewModel.state.value.password).isEqualTo(newPassword)
@@ -38,8 +43,6 @@ class LoginScreenStateTest {
 
     @Test
     fun testUpdateStateWithEmptyUsernameAndEmptyPassword() {
-        val viewModel = LoginViewModel(stateHandle)
-
         viewModel.updateState()
 
         assertThat(viewModel.state.value).isEqualTo(LoginScreenState())
@@ -48,7 +51,11 @@ class LoginScreenStateTest {
     @Test
     fun testUpdateStateWithUserName(){
         val username = "::unimportant::"
-        val viewModel = LoginViewModel(stateHandle)
+        val viewModel = LoginViewModel(
+            stateHandle,
+            InMemoryLoginRepository(),
+            CredentialValidator()
+        )
 
         viewModel.updateUsername(username)
         viewModel.updateState()

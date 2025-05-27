@@ -2,12 +2,17 @@ package com.anthony.tddpractice.login
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.anthony.tddpractice.login.domain.model.LoginCredential
+import com.anthony.tddpractice.login.domain.repository.LoginRepository
+import com.anthony.tddpractice.login.domain.validator.ICredentialValidator
 import kotlinx.coroutines.flow.StateFlow
 
 private const val SCREEN_STATE = "SCREEN_STATE"
 
 class LoginViewModel(
     private val stateHandle: SavedStateHandle,
+    private val loginRepository: LoginRepository,
+    private val credentialValidator: ICredentialValidator,
 ) : ViewModel() {
 
     val state: StateFlow<LoginScreenState> = stateHandle.getStateFlow(
@@ -46,7 +51,36 @@ class LoginViewModel(
     }
 
     fun performLogin() {
-        TODO()
+        val loginScreenState = stateHandle.get<LoginScreenState>(SCREEN_STATE) ?: LoginScreenState()
+        val username = loginScreenState.username
+        val password = loginScreenState.password
+        val loginCredentials = LoginCredential(username = username, password = password)
+
+        if (!isUsernameValid(loginScreenState)) return
+
+        if (!isPasswordValid(loginScreenState)) return
+
+
+        loginRepository.performLogin(loginCredentials)
     }
 
+    private fun isUsernameValid(state: LoginScreenState): Boolean {
+        val isValid = state.isUsernameValid(credentialValidator)
+        if (!isValid) {
+            stateHandle.update<LoginScreenState>(SCREEN_STATE) { state ->
+                state.copy(message = "Username is invalid")
+            }
+        }
+        return isValid
+    }
+
+    private fun isPasswordValid(state: LoginScreenState): Boolean {
+        val isValid = state.isPasswordValid(credentialValidator)
+        if (!isValid) {
+            stateHandle.update<LoginScreenState>(SCREEN_STATE) {
+                it.copy(message = "Password is invalid")
+            }
+        }
+        return isValid
+    }
 }

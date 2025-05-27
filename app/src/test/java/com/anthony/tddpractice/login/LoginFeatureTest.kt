@@ -1,6 +1,8 @@
 package com.anthony.tddpractice.login
 
 import androidx.lifecycle.SavedStateHandle
+import com.anthony.tddpractice.login.data.repository.LoginRepositoryImpl
+import com.anthony.tddpractice.login.data.validator.CredentialValidator
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,7 +36,11 @@ class LoginFeatureTest {
             LoginScreenState(isLoading = true),
             LoginScreenState(message = "Login successful")
         )
-        val viewModel = LoginViewModel(SavedStateHandle())
+        val viewModel = LoginViewModel(
+            SavedStateHandle(),
+            LoginRepositoryImpl(),
+            CredentialValidator()
+        )
         val actual = mutableListOf<LoginScreenState>()
 
         viewModel.performLogin()

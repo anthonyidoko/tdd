@@ -11,6 +11,7 @@ composeBom = "2024.04.01"
 truthVersion = "1.4.4"
 jsonSerializationVersion = "1.8.1"
 serilaztionPlugin = "2.1.21"
+jUnit5 = "5.10.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +34,10 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 
+jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "jUnit5" }
+jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "jUnit5" }
+jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "jUnit5" }
+
 coroutine-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test",version = "1.7.3" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 json-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "jsonSerializationVersion"}
@@ -46,6 +51,6 @@ kotlin-parcelize = {id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = 
 
 
 [bundles]
-unit-test = ["junit","truth", "coroutine-test"]
+unit-test = ["junit","truth", "coroutine-test","jupiter-params", "jupiter-api", "jupiter-engine"]
 lifecycle-ktx = ["androidx-lifecycle-runtime-ktx","androidx-lifecycle-viewmodel-ktx","androidx-viewmodel-compose"]
 
