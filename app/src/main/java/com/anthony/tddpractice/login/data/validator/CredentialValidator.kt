@@ -4,6 +4,8 @@ import com.anthony.tddpractice.login.domain.validator.ICredentialValidator
 
 class CredentialValidator : ICredentialValidator {
     override fun validateUsername(username: String): Boolean {
+        if (username.trim().isEmpty()) return false
+        if (username.length < 4) return false
         return true
     }
 
