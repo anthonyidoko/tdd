@@ -2,10 +2,18 @@ package com.anthony.tddpractice.login
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.anthony.tddpractice.login.domain.model.LoginCredential
 import com.anthony.tddpractice.login.domain.repository.LoginRepository
+import com.anthony.tddpractice.login.domain.result.DataError
+import com.anthony.tddpractice.login.domain.result.Result
 import com.anthony.tddpractice.login.domain.validator.ICredentialValidator
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 
 private const val SCREEN_STATE = "SCREEN_STATE"
 
@@ -60,8 +68,39 @@ class LoginViewModel(
 
         if (!isPasswordValid(loginScreenState)) return
 
+        loginRepository.performLogin(loginCredentials).onStart {
+            stateHandle.update<LoginScreenState>(SCREEN_STATE) {
+                it.copy(isLoading = true)
+            }
+        }.onEach { value ->
+            when (value) {
+                is Result.Success -> {
+                    stateHandle.update<LoginScreenState>(SCREEN_STATE) {
+                        it.copy(
+                            message = "Login Successful"
+                        )
+                    }
+                }
 
-        loginRepository.performLogin(loginCredentials)
+                is Result.Failure -> {
+                    stateHandle.update<LoginScreenState>(SCREEN_STATE) { state ->
+                        state.copy(
+                            isLoginError = true,
+                            message = getErrorMessage(value.error)
+                        )
+                    }
+                }
+            }
+        }.onCompletion {
+            stateHandle.update<LoginScreenState>(SCREEN_STATE) {
+                it.copy(
+                    isLoading = false
+                )
+            }
+        }.launchIn(
+            viewModelScope
+        )
+
     }
 
     private fun isUsernameValid(state: LoginScreenState): Boolean {
@@ -82,5 +121,11 @@ class LoginViewModel(
             }
         }
         return isValid
+    }
+
+    private fun getErrorMessage(error: DataError): String {
+        return when (error) {
+            DataError.NetworkError.NotFound -> "User not found"
+        }
     }
 }

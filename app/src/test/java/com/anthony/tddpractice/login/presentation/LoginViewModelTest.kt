@@ -2,10 +2,12 @@ package com.anthony.tddpractice.login.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import com.anthony.tddpractice.login.LoginViewModel
+import com.anthony.tddpractice.login.ali
+import com.anthony.tddpractice.login.bob
 import com.anthony.tddpractice.login.data.repository.InMemoryLoginRepository
-import com.anthony.tddpractice.login.data.validator.CredentialValidator
 import com.anthony.tddpractice.login.domain.model.LoginCredential
 import com.anthony.tddpractice.login.domain.validator.ICredentialValidator
+import com.anthony.tddpractice.login.jake
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -18,7 +20,7 @@ class LoginViewModelTest {
 
     @Test
     fun testRepositoryPerformLoginWasCalled() {
-        val repository = InMemoryLoginRepository()
+        val repository = InMemoryLoginRepository(listOf(bob, jake, ali))
         val viewModel = LoginViewModel(SavedStateHandle(), repository, mockValidator)
 
         viewModel.updateUsername(validCredentials.username)
@@ -30,7 +32,7 @@ class LoginViewModelTest {
 
     @Test
     fun testLoginNotCalledWithInvalidUsername() {
-        val repository = InMemoryLoginRepository()
+        val repository = InMemoryLoginRepository(listOf(bob, jake, ali))
         val viewModel = LoginViewModel(SavedStateHandle(), repository, mockValidator2)
 
         viewModel.updateUsername(inValidCredentials.username)
@@ -41,7 +43,7 @@ class LoginViewModelTest {
 
     @Test
     fun testLoginWithInvalidPassword() {
-        val loginRepository = InMemoryLoginRepository()
+        val loginRepository = InMemoryLoginRepository(listOf(bob, jake, ali))
         val viewModel = LoginViewModel(SavedStateHandle(), loginRepository, mockValidator2)
 
         viewModel.updatePassword(inValidCredentials.password)

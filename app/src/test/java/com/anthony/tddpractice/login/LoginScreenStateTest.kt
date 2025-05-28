@@ -3,6 +3,8 @@ package com.anthony.tddpractice.login
 import androidx.lifecycle.SavedStateHandle
 import com.anthony.tddpractice.login.data.repository.InMemoryLoginRepository
 import com.anthony.tddpractice.login.data.validator.CredentialValidator
+import com.anthony.tddpractice.login.domain.model.User
+import com.anthony.tddpractice.login.domain.model.UserOccupation
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -13,7 +15,7 @@ class LoginScreenStateTest {
 
     @Before
     fun setUp(){
-        viewModel = LoginViewModel(stateHandle, InMemoryLoginRepository(), CredentialValidator())
+        viewModel = LoginViewModel(stateHandle, InMemoryLoginRepository(listOf(bob, jake, ali)), CredentialValidator())
     }
 
     @Test
@@ -53,7 +55,7 @@ class LoginScreenStateTest {
         val username = "::unimportant::"
         val viewModel = LoginViewModel(
             stateHandle,
-            InMemoryLoginRepository(),
+            InMemoryLoginRepository(listOf(bob, jake, ali)),
             CredentialValidator()
         )
 
